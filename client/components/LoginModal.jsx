@@ -1,7 +1,28 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import google_icon from "../src/assets/google_icon.png";
+import { auth, provider } from "../firebase";
+import { signInWithPopup } from "firebase/auth";
+import { serverUrl } from "../src/App";
+import axios from "axios";
 const LoginModal = ({ open, onClose }) => {
+  const handleGoogleAuth = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const { data } = await axios.post(
+        `${serverUrl}/api/auth/google`,
+        {
+          name: result.user.displayName,
+          email: result.user.email,
+          avatar: result.user.photoURL,
+        },
+        { withCredentials: true },
+      );
+      console.log("Login successful:", data);
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+    }
+  };
   return (
     <>
       <AnimatePresence>
@@ -52,6 +73,7 @@ const LoginModal = ({ open, onClose }) => {
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.96 }}
                     className="group relative w-full h-13 rounded-xl bg-white text-black font-semibold shadow-xl overflow-hidden"
+                    onClick={handleGoogleAuth}
                   >
                     <div className="relative flex items-center justify-center gap-3">
                       <img
