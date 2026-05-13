@@ -8,7 +8,7 @@ import axios from "axios";
 const LoginModal = ({ open, onClose }) => {
   const handleGoogleAuth = async () => {
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider); // this line initiates the Google Sign-In process using Firebase Authentication. It opens a popup window where the user can select their Google account and grant permission for authentication.
       const { data } = await axios.post(
         `${serverUrl}/api/auth/google`,
         {
@@ -113,3 +113,7 @@ const LoginModal = ({ open, onClose }) => {
 };
 
 export default LoginModal;
+// this file defines the LoginModal component, which is a modal dialog that
+// allows users to log in using their Google account. It uses Firebase Authentication
+//  for Google Sign-In and sends the user's information to the server for authentication.
+//  The modal includes animations using Framer Motion and is styled with Tailwind CSS.
