@@ -5,7 +5,10 @@ import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
 import { serverUrl } from "../src/App";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../src/redux/userSlice";
 const LoginModal = ({ open, onClose }) => {
+  const dispatch = useDispatch();
   const handleGoogleAuth = async () => {
     try {
       const result = await signInWithPopup(auth, provider); // this line initiates the Google Sign-In process using Firebase Authentication. It opens a popup window where the user can select their Google account and grant permission for authentication.
@@ -18,7 +21,8 @@ const LoginModal = ({ open, onClose }) => {
         },
         { withCredentials: true },
       );
-      console.log("Login successful:", data);
+      dispatch(setUserData(data.user)); // when logged in another browser and the user refreshes this line dispatches an action to update the user data in the Redux store with the information received from the server after successful authentication. The setUserData action is likely defined in a Redux slice or reducer to handle updating the user state in the application.
+      onClose();
     } catch (error) {
       console.error("Google Sign-In Error:", error);
     }

@@ -38,7 +38,14 @@ export const googleAuth = async (req, res) => {
     });
     //this returns a success message indicating that the user has been authenticated successfully. If there are any errors during the authentication process, it catches the error and returns a server error response with the error message.
     return res.status(200).json({
-      message: "User authenticated successfully",
+      success: true,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        credits: user.credits || 0,
+      },
     });
   } catch (error) {
     console.error(error);

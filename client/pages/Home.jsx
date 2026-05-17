@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import LoginModal from "../components/LoginModal";
-import { motion } from "framer-motion";
-
+import { AnimatePresence, motion } from "framer-motion";
+import { useSelector, useDispatch } from "react-redux";
+import { Coins } from "lucide-react";
+import axios from "axios";
+import { setUserData } from "../src/redux/userSlice";
+import { serverUrl } from "../src/App";
 const Home = () => {
   const highlights = [
     "AI-Powered Code Generation",
@@ -10,6 +14,21 @@ const Home = () => {
   ];
 
   const [openLogin, setOpenLogin] = useState(false);
+  const { userData } = useSelector((state) => state.user); // this is for accessing the user data from the Redux store. It uses the useSelector hook to select the userData property from the user slice of the state. This allows the Home component to access the current user's information and potentially display it or use it for conditional rendering based on whether the user is logged in or not.
+  const [openProfile, setOpenProfile] = useState(false);
+  const dispatch = useDispatch(); //it function was to dispatch actions to the Redux store.
+  const handleLogout = async () => {
+    try {
+      await axios.get(`${serverUrl}/api/auth/logout`, {
+        withCredentials: true,
+      });
+      dispatch(setUserData(null));
+      setOpenProfile(false);
+      // After logging out, you might want to clear the user data from the Redux store or redirect the user to a different page.
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="relative min-h-screen bg-[#040404] text-white overflow-hidden">
@@ -27,13 +46,74 @@ const Home = () => {
             <div className="hidden md:inline text-sm text-zinc-400 hover:text-white cursor-pointer transition">
               Pricing
             </div>
-
-            <button
-              onClick={() => setOpenLogin(true)}
-              className="px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 text-sm transition"
-            >
-              Get Started
-            </button>
+            {userData && (
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm cursor-pointer hover:bg-white/10 transition">
+                <Coins size={14} className="text-yellow-50" />
+                <span className="text-zinc-300">Credits</span>
+                <span>{userData.credits}</span>
+                <span className="font-semibold">+</span>
+              </div>
+            )}
+            {!userData ? (
+              <button
+                className="px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 text-sm"
+                onClick={() => setOpenLogin(true)}
+              >
+                Get Started
+              </button>
+            ) : (
+              <div className="relative">
+                <button
+                  className="flex items-center"
+                  onClick={() => setOpenProfile(!openProfile)}
+                >
+                  <img
+                    src={
+                      userData.avatar ||
+                      `https://ui-avatars.com/api/?name=${userData?.name}`
+                    }
+                    alt="avatar"
+                    className="w-9 h-9 rounded-full border border-white/20 object-cover"
+                  ></img>
+                </button>
+                <AnimatePresence>
+                  {openProfile && (
+                    <>
+                      <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        className="absolute right-0 mt-3 w-60 z-50 bg-[#040404] border border-white/10 rounded-xl shadow-2xl overflow-hidden p-4 text-sm"
+                      >
+                        <div className="font-semibold px-4 py-3 border-b border-white/10">
+                          <p className="text-sm font-medium truncate">
+                            {userData.email}
+                          </p>
+                          <p className="text-xs text-zinc-500 truncate">
+                            {userData.name}
+                          </p>
+                        </div>
+                        <button className="md:hidden w-full px-4 py-3 flex items-center gap-2 text-sm border-b border-white/10 hover:bg-white/5">
+                          <Coins size={14} className="text-yellow-500" />
+                          <span className="text-zinc-300">Credits</span>
+                          <span>{userData.credits}</span>
+                          <span className="font-semibold">+</span>
+                        </button>
+                        <button className="w-full px-4 py-3 text-left text-sm hover:bg-white/5">
+                          DashBoard
+                        </button>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full px-4 py-3 text-left text-sm text-red-500 hover:bg-white/5"
+                        >
+                          Logout
+                        </button>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
