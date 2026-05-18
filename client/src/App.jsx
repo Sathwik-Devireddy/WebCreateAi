@@ -16,11 +16,11 @@ const App = () => {
           <Route path="/" element={<Home />}></Route>
           <Route
             path="/dashboard"
-            element={userData ? <Dashboard /> : <Navigate to={"/"} />}
+            element={userData ? <Dashboard /> : <Home />}
           ></Route>
           <Route
             path="/generate"
-            element={userData ? <Generate /> : <Navigate to={"/"} />}
+            element={userData ? <Generate /> : <Home />}
           ></Route>
         </Routes>
       </BrowserRouter>

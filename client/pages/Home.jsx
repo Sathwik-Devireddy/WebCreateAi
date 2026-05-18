@@ -6,6 +6,7 @@ import { Coins } from "lucide-react";
 import axios from "axios";
 import { setUserData } from "../src/redux/userSlice";
 import { serverUrl } from "../src/App";
+import { useNavigate } from "react-router-dom";
 const Home = () => {
   const highlights = [
     "AI-Powered Code Generation",
@@ -17,6 +18,8 @@ const Home = () => {
   const { userData } = useSelector((state) => state.user); // this is for accessing the user data from the Redux store. It uses the useSelector hook to select the userData property from the user slice of the state. This allows the Home component to access the current user's information and potentially display it or use it for conditional rendering based on whether the user is logged in or not.
   const [openProfile, setOpenProfile] = useState(false);
   const dispatch = useDispatch(); //it function was to dispatch actions to the Redux store.
+  const navigate = useNavigate(); // this is a hook from the react-router-dom library that allows you to programmatically navigate to different routes in your application. In this code, it is used to navigate the user to the dashboard page when they click on the "Dashboard" button in the profile dropdown menu.
+  // the above line used purpose was to navigate the user to the dashboard page when they click on the "Dashboard" button in the profile dropdown menu. It uses the navigate function to change the route to "/dashboard", which is defined in the App component's routing configuration. This allows for seamless navigation within the application without needing to refresh the page.
   const handleLogout = async () => {
     try {
       await axios.get(`${serverUrl}/api/auth/logout`, {
@@ -99,7 +102,10 @@ const Home = () => {
                           <span>{userData.credits}</span>
                           <span className="font-semibold">+</span>
                         </button>
-                        <button className="w-full px-4 py-3 text-left text-sm hover:bg-white/5">
+                        <button
+                          className="w-full px-4 py-3 text-left text-sm hover:bg-white/5"
+                          onClick={() => navigate("/dashboard")}
+                        >
                           DashBoard
                         </button>
                         <button
@@ -148,10 +154,10 @@ const Home = () => {
           transition={{ delay: 0.6 }}
         >
           <button
-            onClick={() => setOpenLogin(true)}
+            onClick={() => navigate("/dashboard")}
             className="px-10 py-4 rounded-xl bg-white text-black font-semibold hover:scale-105 mt-12 transition duration-300"
           >
-            Get Started
+            {userData ? "Go to Dashboard" : "Get Started"}
           </button>
         </motion.div>
       </section>
