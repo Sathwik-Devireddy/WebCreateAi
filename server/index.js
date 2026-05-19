@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import websiteRouter from "./routes/website.routes.js";
 const app = express();
 const port = process.env.PORT || 6000;
 //convert to json else it will be in the form of a string and we can't access the properties of it
@@ -19,6 +20,7 @@ app.use(
 );
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/website", websiteRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

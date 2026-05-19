@@ -2,8 +2,26 @@ import React from "react";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import serverUrl from "../src/config/config.js";
 const Generate = () => {
   const navigate = useNavigate();
+  const [prompt, setPrompt] = useState("");
+  const handleGeneratewebsite = async () => {
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/website/generate`,
+        { prompt },
+        {
+          withCredentials: true,
+        },
+      );
+      console.log(result.data);
+    } catch (error) {
+      console.error("Error generating website:", error);
+    }
+  };
   return (
     <>
       <div className="min-h-screen bg-linear-to-br from-[#050505] via-[#18181b] to-[#050505] text-white">
@@ -47,15 +65,20 @@ const Generate = () => {
             </h1>
             <div className="relative">
               <textarea
+                onChange={(e) => setPrompt(e.target.value)}
+                value={prompt}
                 name=""
                 id=""
-                className="w-full h-56 p-6 rounded-3xl bg-black/60 border border-white/10 outline-none resize-none text-sm leading-relaxed focus-ring-2 focus-ring-white/20 "
+                className="w-full h-56 p-6 rounded-3xl bg-black/60 border border-white/40 outline-none resize-none text-sm leading-relaxed focus-ring-2 focus-ring-white/20 "
                 placeholder="describe your project in detail..."
               ></textarea>
             </div>
           </div>
           <div className="flex items-center gap-4 justify-center">
-            <motion.div className="px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:scale-105 transition">
+            <motion.div
+              onClick={handleGeneratewebsite}
+              className="px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:scale-105 transition"
+            >
               Initiate
             </motion.div>
           </div>
