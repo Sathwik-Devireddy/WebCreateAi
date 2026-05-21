@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import serverUrl from "../src/config/config.js";
+const phases = [
+  "Pondering...",
+  "Analyzing...",
+  "Processing...",
+  "Adding...",
+  "Finalizing...",
+];
 const Generate = () => {
   const navigate = useNavigate();
   const [prompt, setPrompt] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [phaseIndex, setPhaseIndex] = useState(0); // Index of the current phase
+  const [error, setError] = useState("");
+  //in this below code it contains the logic to generate the website
   const handleGeneratewebsite = async () => {
+    setLoading(true);
     try {
       const result = await axios.post(
         `${serverUrl}/api/website/generate`,
@@ -18,10 +31,41 @@ const Generate = () => {
         },
       );
       console.log(result.data);
+      setProgress(100);
+      setLoading(false);
+      navigate(`/editor/${result.data.websiteId}`);
     } catch (error) {
+      setLoading(false);
+      setError(error.response?.data?.message || "Something went wrong");
       console.error("Error generating website:", error);
     }
   };
+  useEffect(() => {
+    // Function to update the progress and phase
+    if (!loading) {
+      setPhaseIndex(0);
+      setProgress(0);
+      return;
+    }
+    let value = 0;
+    let phase = 0;
+    const interval = setInterval(() => {
+      // Interval to update the progress and phase
+      const increment =
+        value < 20
+          ? Math.random() * 1.5
+          : value < 60
+            ? Math.random() * 1.2
+            : Math.random() * 0.6;
+      value += increment;
+      if (value >= 93) value = 93;
+      ((phase = Math.min(Math.floor((value / 100) * phases.length))),
+        phases.length - 1);
+      setProgress(Math.floor(value));
+      setPhaseIndex(phase);
+    }, 1200);
+    return () => clearInterval(interval);
+  }, [loading]);
   return (
     <>
       <div className="min-h-screen bg-linear-to-br from-[#050505] via-[#18181b] to-[#050505] text-white">
@@ -69,19 +113,44 @@ const Generate = () => {
                 value={prompt}
                 name=""
                 id=""
-                className="w-full h-56 p-6 rounded-3xl bg-black/60 border border-white/40 outline-none resize-none text-sm leading-relaxed focus-ring-2 focus-ring-white/20 "
+                className="w-full h-56 p-6 rounded-3xl bg-black/60 border border-white/40 outline-none resize-none text-sm leading-relaxed focus:ring-2 focus:ring-white/20 "
                 placeholder="describe your project in detail..."
               ></textarea>
             </div>
+            {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
           </div>
           <div className="flex items-center gap-4 justify-center">
-            <motion.div
+            <motion.button
               onClick={handleGeneratewebsite}
-              className="px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:scale-105 transition"
+              disabled={!prompt.trim() || loading}
+              className={`px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:scale-105 transition ${prompt.trim() && !loading ? "bg-white text-black" : "bg-white/10 text-zinc-400 cursor-not-allowed"}`}
             >
               Initiate
-            </motion.div>
+            </motion.button>
           </div>
+          {loading && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="max-w-xl mx-auto mt-12"
+            >
+              <div className="flex justify-between mb-2 text-xs text-zinc-400">
+                <span className="">{phases[phaseIndex]}</span>
+                <span>{progress}%</span>
+              </div>
+              <div className="w-full h-2 bg-zinc-700 rounded-full overflow-hidden">
+                <motion.div
+                  animate={{ width: `${progress}%` }}
+                  transition={{ ease: "easeOut", duration: 0.8 }}
+                  className="h-full bg-gradient-to-r from-white to-zinc-400"
+                ></motion.div>
+                <div className="text-center text-xs text-zinc-400 mt-4">
+                  Estimated time remaining:{""}
+                  <span className="text-white font-medium">~8-12 minutes</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
     </>

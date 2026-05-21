@@ -29,7 +29,7 @@ const wesiteSchema = new mongoose.Schema(
     },
     conversation: [messageSchema],
     deployed: { type: Boolean, default: false },
-    slug: { type: String, unique: true },
+    slug: { type: String, unique: true, sparse: true },
     deployedUrl: { type: String, default: "" },
   },
   { timestamps: true },

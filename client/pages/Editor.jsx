@@ -61,6 +61,19 @@ const WebsiteEditor = () => {
       console.error("Error updating website:", error);
     }
   };
+  const handleDeploy = async () => {
+    try {
+      const result = await axios.get(
+        `${serverUrl}/api/website/deploy/${website.id}`,
+        {
+          withCredentials: true,
+        },
+      );
+      window.open(`${result.data.url}`, "_blank");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     if (!updateLoading) return;
     const i = setInterval(() => {
@@ -172,10 +185,17 @@ const WebsiteEditor = () => {
             <span className="text-xs text-zinc-400">Live Preview</span>
             <div className="flex items-center gap-4">
               {" "}
-              <button className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-sm font-semibold px-3 py-1 rounded-lg hover:bg-gradient-to-l hover:scale-105 transition">
-                <Rocket size={14} />
-                Deploy
-              </button>
+              {website.deployed ? (
+                ""
+              ) : (
+                <button
+                  onClick={handleDeploy}
+                  className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-sm font-semibold px-3 py-1 rounded-lg hover:bg-gradient-to-l hover:scale-105 transition"
+                >
+                  <Rocket size={14} />
+                  Deploy
+                </button>
+              )}
               <button
                 onClick={() => setShowChat(true)}
                 className="p-2 lg:hidden"
@@ -273,7 +293,11 @@ const WebsiteEditor = () => {
         <AnimatePresence>
           {showFullPreview && (
             <motion.div className="fixed inset-0 z-[9999] bg-black">
-              <iframe className="w-full h-full bg-white" srcDoc={code} />
+              <iframe
+                sandbox="allow-scripts allow-same-origin allow-forms"
+                className="w-full h-full bg-white"
+                srcDoc={code}
+              />
               <button
                 onClick={() => setShowFullPreview(false)}
                 className="absolute top-4 right-4 p-2 bg-black/70 rounded-lg"
