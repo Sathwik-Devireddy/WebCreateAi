@@ -4,21 +4,32 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import serverUrl from "../src/config/config.js";
 import { useState } from "react";
-import { Code2, Monitor, Rocket } from "lucide-react";
+import {
+  Code2,
+  MessageCircle,
+  MessageSquare,
+  Monitor,
+  Rocket,
+  X,
+} from "lucide-react";
 import { useRef } from "react";
 import Loader from "../components/Loader.jsx";
 import Button from "../components/Button.jsx";
-
-const Editor = () => {
+import { AnimatePresence, motion } from "framer-motion";
+import Editor from "@monaco-editor/react";
+const WebsiteEditor = () => {
   const { id } = useParams();
   const [website, setwebsite] = useState(null);
   const [error, seterror] = useState("");
   const [prompt, setPrompt] = useState(""); //prompt for ai
   const iframeRef = React.useRef(null);
-  const [code, setCode] = useState(""); // latest code
+  const [code, setCode] = useState("<h1>Loading...</h1>"); // latest code
   const [messages, setMessages] = useState([]); // Conversation history
   const [updateLoading, setUpdateLoading] = useState(false); // loading state
   const [thinkingIndex, setThinkingIndex] = useState(0); // index of the current thinking step
+  const [showCode, setShowCode] = useState(false);
+  const [showFullPreview, setShowFullPreview] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
   const thinkingSteps = [
     "Pondering...",
@@ -110,7 +121,7 @@ const Editor = () => {
   return (
     <>
       <div className="h-screen w-screen flex bg-black text-white overflow-hidden">
-        <aside className="w-[360px] border-r border-white/10 flex flex-col bg-linear-to-br from-gray-900 via-olive-900 to-slate-900">
+        <aside className="hidden lg:flex w-[360px] border-r border-white/10 flex-col bg-linear-to-br from-gray-900 via-olive-900 to-slate-900">
           <Headers />
           <>
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
@@ -165,28 +176,130 @@ const Editor = () => {
                 <Rocket size={14} />
                 Deploy
               </button>
-              <button className="p-2">
+              <button
+                onClick={() => setShowChat(true)}
+                className="p-2 lg:hidden"
+              >
+                <MessageSquare size={18} />
+              </button>
+              <button className="p-2" onClick={() => setShowCode(true)}>
                 <Code2 size={18} />
               </button>
-              <button className="p-2">
+              <button className="p-2" onClick={() => setShowFullPreview(true)}>
                 <Monitor size={18} />
               </button>
             </div>
           </div>
           <iframe ref={iframeRef} className="flex-1 w-full bg-white "></iframe>
         </div>
+        <AnimatePresence>
+          {showChat && (
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              className="fixed inset-0 right-0 w-full lg:w-[45%] z-[9999] bg-[#1e1e1e] flex flex-col"
+            >
+              <Headers onclose={() => setShowChat(false)} />
+              <>
+                <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+                  {" "}
+                  {messages.map((m, i) => (
+                    <div
+                      key={i}
+                      className={` max-w-[85%] ${m.role === "user" ? "ml-auto" : "mr-auto"}`}
+                    >
+                      <div
+                        className={`px-4 py-2 rounded-2xl text-sm leading-relaxed ${m.role === "user" ? "bg-white text-black" : "bg-white/5 border border-white/10 text-zinc-200"} `}
+                      >
+                        {m.content}
+                      </div>
+                    </div>
+                  ))}
+                  {updateLoading && (
+                    <div className="max-w-[85%] mr-auto">
+                      <div className="px-4 py-2 rounded-2xl text-sm leading-relaxed bg-white/5 border border-white/10 text-zinc-200">
+                        {thinkingSteps[thinkingIndex]}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="p-3 border-t border-white/10">
+                  <div className="flex gap-2">
+                    <textarea
+                      rows="1"
+                      onChange={(e) => setPrompt(e.target.value)}
+                      value={prompt}
+                      placeholder="describe changes..."
+                      className="flex-1 resize-none rounded-2xl px-4 py-3 bg-white/5 border border-white/10 text-sm"
+                    ></textarea>
+                    <div
+                      onClick={handleUpdate}
+                      disabled={updateLoading}
+                      className="px-3 py-3 rounded-lg bg-slate text-black text-sm font-semibold  transition"
+                    >
+                      <Button />
+                    </div>
+                  </div>
+                </div>
+              </>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {showCode && (
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: "0" }}
+              exit={{ x: "100%" }}
+              className="fixed inset-y-0 right-0 w-full lg:w-[45%] z-[9999] bg-[#1e1e1e] flex flex-col"
+            >
+              <div className="h-12 px-4 flex justify-between items-center border-b border-white/10 bg-[#1e1e1e]">
+                <span className="text-sm font-medium">index.html</span>
+                <button onClick={() => setShowCode(false)}>
+                  <X size={16} />
+                </button>
+              </div>
+              <Editor
+                theme="vs-dark"
+                height="100%"
+                value={code}
+                language="html"
+                onChange={(v) => setCode(v)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {showFullPreview && (
+            <motion.div className="fixed inset-0 z-[9999] bg-black">
+              <iframe className="w-full h-full bg-white" srcDoc={code} />
+              <button
+                onClick={() => setShowFullPreview(false)}
+                className="absolute top-4 right-4 p-2 bg-black/70 rounded-lg"
+              >
+                <X />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
-  function Headers() {
+  function Headers({ onclose }) {
     return (
       <>
         <div className="h-14 px-4 flex items-center justify-between border-b border-white/10">
           <span className="font-semibold truncate">{website.title}</span>
+          {onclose && (
+            <button onClick={onclose} className="lg:hidden " color="white">
+              <X size={18} />
+            </button>
+          )}
         </div>
       </>
     );
   }
 };
 
-export default Editor;
+export default WebsiteEditor;

@@ -19,7 +19,7 @@ const masterPrompt = `YOU ARE A PRINCIPAL FRONTEND DEVELOPER. YOU ARE AN EXPERT 
 - Smooth transitions & hover effects
 - SPA-style multi-page experience
 - Production-ready, readable code
-
+-make this website futuristic/cinematic/apple-styled
 --------------------------------------------------
 RESPONSIVE DESIGN (ABSOLUTE REQUIREMENT)
 --------------------------------------------------

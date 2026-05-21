@@ -5,7 +5,7 @@ import useGetCurrentUser from "../hooks/useGetCurrentUser";
 import { useSelector } from "react-redux";
 import Dashboard from "../pages/Dashboard";
 import Generate from "../pages/Generate";
-import Editor from "../pages/Editor";
+import WebsiteEditor from "../pages/Editor";
 export const serverUrl = "http://localhost:8000"; // this variable holds the base URL of the server, which is used for making API requests from the client application. It allows the client to communicate with the server for authentication and user-related operations.
 const App = () => {
   useGetCurrentUser();
@@ -25,7 +25,7 @@ const App = () => {
           ></Route>
           <Route
             path="/editor/:id"
-            element={userData ? <Editor /> : <Home />}
+            element={userData ? <WebsiteEditor /> : <Home />}
           ></Route>
         </Routes>
       </BrowserRouter>
