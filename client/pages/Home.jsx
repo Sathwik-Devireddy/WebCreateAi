@@ -46,15 +46,28 @@ const Home = () => {
           <div className="text-lg font-semibold">GenWeb.ai</div>
 
           <div className="flex items-center gap-5">
-            <div className="hidden md:inline text-sm text-zinc-400 hover:text-white cursor-pointer transition">
+            <div
+              className="hidden md:inline text-sm text-zinc-400 hover:text-white cursor-pointer transition"
+              onClick={() => navigate("/pricing")}
+            >
               Pricing
             </div>
             {userData && (
               <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm cursor-pointer hover:bg-white/10 transition">
                 <Coins size={14} className="text-yellow-50" />
-                <span className="text-zinc-300">Credits</span>
+                <span
+                  className="text-zinc-300"
+                  onClick={() => navigate("/pricing")}
+                >
+                  Credits
+                </span>
                 <span>{userData.credits}</span>
-                <span className="font-semibold">+</span>
+                <span
+                  className="font-semibold"
+                  onClick={() => navigate("/pricing")}
+                >
+                  +
+                </span>
               </div>
             )}
             {!userData ? (
