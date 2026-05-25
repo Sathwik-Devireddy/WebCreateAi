@@ -21,7 +21,7 @@ app.post(
 );
 app.use(
   cors({
-    origin: "https://webcreateai-1.onrender.com/",
+    origin: "https://webcreateai-1.onrender.com",
     credentials: true,
   }),
 );
