@@ -1,7 +1,7 @@
 const openRouterUrl =
   "https://openrouter.ai/api/v1/chat/completions";
 
-const model = "google/gemini-2.5-flash";
+const model = "qwen/qwen-2.5-coder-32b-instruct";
 
 export const generateResponse = async (prompt) => {
   const res = await fetch(openRouterUrl, {
@@ -47,6 +47,8 @@ Requirements:
       ],
 
       temperature: 0.3,
+
+      max_tokens: 4000,
     }),
   });
 
