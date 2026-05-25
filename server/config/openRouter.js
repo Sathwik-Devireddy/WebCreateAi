@@ -1,7 +1,7 @@
 const openRouterUrl =
   "https://openrouter.ai/api/v1/chat/completions";
 
-const model = "qwen/qwen-2.5-coder-32b-instruct";
+const model = "deepseek/deepseek-chat-v3-0324";
 
 export const generateResponse = async (prompt) => {
   const res = await fetch(openRouterUrl, {
@@ -19,51 +19,27 @@ export const generateResponse = async (prompt) => {
         {
           role: "system",
 
-          content: `
-You are an expert frontend developer.
-
-Generate highly creative modern websites using:
-- HTML
-- CSS
-- vanilla JavaScript
-
-Requirements:
-- return ONLY raw HTML
-- no JSON
-- no markdown
-- no triple backticks
-- single-file HTML
-- GSAP animations
-- premium UI
-- responsive layout
-- modern effects
-- cinematic sections
-`,
+          content: "You must return ONLY valid raw JSON.",
         },
 
         {
           role: "user",
+
           content: prompt,
         },
       ],
 
-      temperature: 0.3,
-
-      max_tokens: 4000,
+      temperature: 0.2,
     }),
   });
 
-  const data = await res.json();
-
-  console.log(JSON.stringify(data, null, 2));
-
   if (!res.ok) {
-    throw new Error(JSON.stringify(data));
+    const err = await res.text();
+
+    throw new Error(`OpenRouter API error: ${err}`);
   }
 
-  return {
-    message: "Website generated successfully",
+  const data = await res.json();
 
-    code: data.choices[0].message.content,
-  };
+  return data.choices[0].message.content;
 };
