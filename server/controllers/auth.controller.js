@@ -33,7 +33,7 @@ export const googleAuth = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 2 * 24 * 60 * 60 * 1000,
     });
     //this returns a success message indicating that the user has been authenticated successfully. If there are any errors during the authentication process, it catches the error and returns a server error response with the error message.
