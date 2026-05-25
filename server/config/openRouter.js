@@ -2,6 +2,7 @@ import { OpenRouter } from "@openrouter/sdk";
 const openRouterUrl = "https://openrouter.ai/api/v1/chat/completions";
 const openRouterApiKey = process.env.OPENROUTER_API_KEY;
 
+
 const model = "deepseek/deepseek-chat-v3-0324";
 export const generateResponse = async (prompt) => {
   const res = await fetch(openRouterUrl, {
