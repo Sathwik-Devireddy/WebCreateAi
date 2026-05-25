@@ -30,7 +30,7 @@ export const billing = async (req, res) => {
         credits: plan.credits,
         plan: plan.plan,
       },
-      success_url: `${process.env.FRONTEND_URL}/`,
+      success_url: `${process.env.FRONTEND_URL}/?payment=success`,`,
       cancel_url: `${process.env.FRONTEND_URL}/pricing`,
     });
     return res.status(200).json({ sessionUrl: session.url });
