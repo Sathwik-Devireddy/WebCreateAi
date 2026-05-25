@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import serverUrl from "../src/config/config.js";
+import {serverUrl} from "../src/config/config.js";
 import { Monitor, Rocket, Share, Check, Link } from "lucide-react";
 const Dashboard = () => {
   const { userData } = useSelector((state) => state.user);
