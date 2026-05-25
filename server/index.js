@@ -12,7 +12,7 @@ import billingRouter from "./routes/billing.routes.js";
 import { stripeWebhook } from "./controllers/stripWebhook.controller.js";
 
 const app = express();
-
+app.set("trust proxy", 1);
 const port = process.env.PORT || 6000;
 
 // Stripe webhook MUST come before express.json()
