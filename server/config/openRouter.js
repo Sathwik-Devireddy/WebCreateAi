@@ -1,7 +1,7 @@
 const openRouterUrl =
   "https://openrouter.ai/api/v1/chat/completions";
 
-const model = "google/gemini-2.0-flash-exp:free";
+const model = "google/gemini-2.5-flash";
 
 export const generateResponse = async (prompt) => {
   const res = await fetch(openRouterUrl, {
@@ -20,7 +20,7 @@ export const generateResponse = async (prompt) => {
           role: "system",
 
           content: `
-You are an expert award-winning frontend developer.
+You are an expert frontend developer.
 
 Generate highly creative modern websites using:
 - HTML
@@ -28,17 +28,15 @@ Generate highly creative modern websites using:
 - vanilla JavaScript
 
 Requirements:
-- return ONLY valid raw JSON
-- premium UI design
-- smooth animations
-- responsive design
-- GSAP CDN animations
-- cinematic layouts
-- modern gradients
-- interactive effects
-- glassmorphism
-- premium landing page aesthetics
-- single-file HTML structure
+- return ONLY pure valid JSON
+- no markdown
+- no triple backticks
+- single-file HTML
+- GSAP animations
+- premium UI
+- responsive layout
+- modern effects
+- cinematic sections
 `,
         },
 
@@ -48,17 +46,17 @@ Requirements:
         },
       ],
 
-      temperature: 0.7,
+      temperature: 0.3,
     }),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-
-    throw new Error(`OpenRouter API error: ${err}`);
-  }
-
   const data = await res.json();
+
+  console.log(JSON.stringify(data, null, 2));
+
+  if (!res.ok) {
+    throw new Error(JSON.stringify(data));
+  }
 
   return data.choices[0].message.content;
 };
