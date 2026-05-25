@@ -28,7 +28,8 @@ Generate highly creative modern websites using:
 - vanilla JavaScript
 
 Requirements:
-- return ONLY pure valid JSON
+- return ONLY raw HTML
+- no JSON
 - no markdown
 - no triple backticks
 - single-file HTML
@@ -60,5 +61,9 @@ Requirements:
     throw new Error(JSON.stringify(data));
   }
 
-  return data.choices[0].message.content;
+  return {
+    message: "Website generated successfully",
+
+    code: data.choices[0].message.content,
+  };
 };
