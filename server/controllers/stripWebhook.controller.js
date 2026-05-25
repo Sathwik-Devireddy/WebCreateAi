@@ -5,6 +5,8 @@ import User from "../models/user.model.js";
 dotenv.config();
 
 export const stripeWebhook = async (req, res) => {
+  console.log("Webhook hit");
+
   const sig = req.headers["stripe-signature"];
 
   let event;
@@ -15,6 +17,9 @@ export const stripeWebhook = async (req, res) => {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
+
+    console.log(event.type);
+
   } catch (error) {
     console.log(error.message);
 
@@ -24,7 +29,6 @@ export const stripeWebhook = async (req, res) => {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
 
-    console.log("Payment Successful");
     console.log(session.metadata);
 
     const userId = session.metadata.userId;
@@ -34,17 +38,22 @@ export const stripeWebhook = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
+      console.log("User not found");
+
       return res.status(404).json({
         message: "User not found",
       });
     }
+
+    console.log("Before:", user.credits);
 
     user.credits += credits;
     user.plan = plan;
 
     await user.save();
 
-    console.log("Credits Updated");
+    console.log("After:", user.credits);
+    console.log("Saved");
   }
 
   return res.status(200).json({
