@@ -36,6 +36,13 @@ const Home = () => {
     }
   };
   useEffect(() => {
+  const query = new URLSearchParams(window.location.search);
+
+  if (query.get("payment") === "success") {
+    window.location.reload();
+  }
+}, []);
+  useEffect(() => {
     if (!userData) {
       return;
     }
