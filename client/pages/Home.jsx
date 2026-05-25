@@ -7,6 +7,8 @@ import axios from "axios";
 import { setUserData } from "../src/redux/userSlice";
 import { serverUrl } from "../src/App";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
 const Home = () => {
   const highlights = [
     "AI-Powered Code Generation",
@@ -18,6 +20,7 @@ const Home = () => {
   const { userData } = useSelector((state) => state.user); // this is for accessing the user data from the Redux store. It uses the useSelector hook to select the userData property from the user slice of the state. This allows the Home component to access the current user's information and potentially display it or use it for conditional rendering based on whether the user is logged in or not.
   const [openProfile, setOpenProfile] = useState(false);
   const dispatch = useDispatch(); //it function was to dispatch actions to the Redux store.
+  const [websites, setWebsites] = useState(null);
   const navigate = useNavigate(); // this is a hook from the react-router-dom library that allows you to programmatically navigate to different routes in your application. In this code, it is used to navigate the user to the dashboard page when they click on the "Dashboard" button in the profile dropdown menu.
   // the above line used purpose was to navigate the user to the dashboard page when they click on the "Dashboard" button in the profile dropdown menu. It uses the navigate function to change the route to "/dashboard", which is defined in the App component's routing configuration. This allows for seamless navigation within the application without needing to refresh the page.
   const handleLogout = async () => {
@@ -32,7 +35,23 @@ const Home = () => {
       console.log(error);
     }
   };
-
+  useEffect(() => {
+    if (!userData) {
+      return;
+    }
+    const handleGetAllWebsites = async () => {
+      try {
+        const result = await axios.get(`${serverUrl}/api/website/get-all`, {
+          withCredentials: true,
+        });
+        setWebsites(result.data || []);
+        console.log(result.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    handleGetAllWebsites();
+  }, [userData]);
   return (
     <div className="relative min-h-screen bg-[#040404] text-white overflow-hidden">
       {/* Navbar */}
@@ -168,38 +187,74 @@ const Home = () => {
           transition={{ delay: 0.6 }}
         >
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() =>
+              userData ? navigate("/dashboard") : setOpenLogin(true)
+            }
             className="px-10 py-4 rounded-xl bg-white text-black font-semibold hover:scale-105 mt-12 transition duration-300"
           >
             {userData ? "Go to Dashboard" : "Get Started"}
           </button>
         </motion.div>
       </section>
+      {!userData && (
+        <section className="max-w-7xl mx-auto px-6 pb-32">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {highlights.map((highlight, index) => (
+              <motion.div
+                key={index}
+                className="rounded-2xl bg-white/5 border border-white/10 p-8"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.5,
+                  delay: index * 0.2,
+                }}
+              >
+                <h1 className="text-xl font-semibold mb-4">{highlight}</h1>
 
+                <p className="text-sm text-zinc-400 leading-relaxed">
+                  GenWeb.ai builds real websites with clean code, smooth
+                  animations, responsive layouts, and scalable architecture.
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
       {/* Highlights */}
-      <section className="max-w-7xl mx-auto px-6 pb-32">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {highlights.map((highlight, index) => (
-            <motion.div
-              key={index}
-              className="rounded-2xl bg-white/5 border border-white/10 p-8"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.2,
-              }}
-            >
-              <h1 className="text-xl font-semibold mb-4">{highlight}</h1>
 
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                GenWeb.ai builds real websites with clean code, smooth
-                animations, responsive layouts, and scalable architecture.
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {userData && websites?.length > 0 && (
+        <section className=" max-w-7xl mx-auto px-6 pb-32">
+          <h3 className="text-2xl font-semibold mb-6">Your Websites</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {websites.slice(0, 3).map((w, i) => (
+              <motion.div
+                key={w._id}
+                whileHover={{ scale: 1.05 }}
+                onClick={() => navigate(`/editor/${w._id}`)}
+                className="cursor-pointer rounded-2xl bg-white/5 border border-white/10 overflow-hidden"
+              >
+                <div className="h-40 bg-black">
+                  {" "}
+                  <iframe
+                    srcDoc={w.latestCode}
+                    className="w-[140%] h-[140%] scale-[0.72] origin-top-left pointer-events-none bg-white"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-base font-semibold line-clamp-2">
+                    {w.title}
+                  </h3>
+                  <p className="text-xs text-zinc-400">
+                    Last Updated {""}
+                    {new Date(w.updatedAt).toLocaleDateString()}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-white/10 py-8 text-center text-zinc-500 text-sm">

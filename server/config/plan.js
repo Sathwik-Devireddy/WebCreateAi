@@ -5,12 +5,12 @@ export const PLANS = {
     plan: "free",
   },
   pro: {
-    price: 499,
+    price: 49,
     credits: 500,
     plan: "pro",
   },
   enterprise: {
-    price: 1499,
+    price: 149,
     credits: 1000,
     plan: "enterprise",
   },

@@ -7,11 +7,18 @@ import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import websiteRouter from "./routes/website.routes.js";
+import billingRouter from "./routes/billing.routes.js";
+import { stripeWebhook } from "./controllers/stripWebhook.controller.js";
 const app = express();
 const port = process.env.PORT || 6000;
 //convert to json else it will be in the form of a string and we can't access the properties of it
 app.use(express.json());
 app.use(cookieParser());
+app.post(
+  "/api/strip-webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook,
+);
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -21,6 +28,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/website", websiteRouter);
+app.use("/api/billing", billingRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

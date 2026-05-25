@@ -1,5 +1,5 @@
-import { PLANS } from "../config/plan";
-import stripe from "../config/stripe";
+import { PLANS } from "../config/plan.js";
+import stripe from "../config/stripe.js";
 export const billing = async (req, res) => {
   try {
     const { planType } = req.body;
@@ -26,7 +26,7 @@ export const billing = async (req, res) => {
         },
       ],
       metadata: {
-        userId,
+        userId: userId.toString(),
         credits: plan.credits,
         plan: plan.plan,
       },

@@ -2,6 +2,11 @@ import { ArrowLeftCircleIcon, Coins } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import serverUrl from "../src/config/config.js";
+import { useState } from "react";
+import axios from "axios";
+
 const plans = [
   {
     key: "free",
@@ -21,7 +26,7 @@ const plans = [
   {
     key: "pro",
     name: "Pro",
-    price: "₹499",
+    price: "$49",
     credits: 500,
     description: "Built for freelancers, creators, and startup founders",
     features: [
@@ -37,7 +42,7 @@ const plans = [
   {
     key: "enterprise",
     name: "Enterprise",
-    price: "₹1999",
+    price: "$149",
     credits: 2500,
     description: "Best for agencies and businesses building at scale",
     features: [
@@ -54,6 +59,30 @@ const plans = [
 ];
 const Pricing = () => {
   const navigate = useNavigate();
+  const { userData } = useSelector((state) => state.user);
+  const [loading, setloading] = React.useState("");
+  const handleBuy = async (planKey) => {
+    if (!userData) {
+      navigate("/");
+      return;
+    }
+    if (planKey === "free") {
+      navigate("/dashboard");
+      return;
+    }
+    setloading(planKey);
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/billing`,
+        { planType: planKey },
+        { withCredentials: true },
+      );
+      window.location.href = result.data.sessionUrl;
+    } catch (error) {
+      console.log(error);
+      setloading("");
+    }
+  };
   return (
     <div>
       <div className="relative min-h-screen overflow-hidden bg-[#050505] text-white px-6 pt-16 pb-24">
@@ -110,10 +139,15 @@ const Pricing = () => {
               </ul>{" "}
               <motion.button
                 whileTap={{ scale: 0.96 }}
-                className={`w-full rounded-lg bg-indigo-500 hover:bg-indigo-600 py-2 text-white font-semibold mt-4 transition-all"
-                ${plan.popular ? "bg-indigo-500 hover:bg-indigo-600" : "bg-white/10 hover:bg-white/20"}disabled:opacity-60`}
+                disabled={loading === plan.key}
+                onClick={() => handleBuy(plan.key)}
+                className={`w-full rounded-lg py-2 text-white font-semibold mt-4 transition-all disabled:opacity-60 ${
+                  plan.popular
+                    ? "bg-indigo-500 hover:bg-indigo-600"
+                    : "bg-white/10 hover:bg-white/20"
+                }`}
               >
-                {plan.button}
+                {loading === plan.key ? "Loading..." : plan.button}
               </motion.button>
             </motion.div>
           ))}
