@@ -35,11 +35,11 @@ const Home = () => {
       console.log(error);
     }
   };
-  useEffect(() => {
+ useEffect(() => {
   const query = new URLSearchParams(window.location.search);
 
   if (query.get("payment") === "success") {
-    window.location.reload();
+    window.history.replaceState({}, "", "/");
   }
 }, []);
   useEffect(() => {
