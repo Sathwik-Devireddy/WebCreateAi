@@ -1,6 +1,5 @@
 import { ArrowLeft, Edit2Icon, Share2Icon, ShareIcon } from "lucide-react";
 import React, { useEffect } from "react";
-import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";

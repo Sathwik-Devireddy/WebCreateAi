@@ -1,16 +1,13 @@
-import { OpenRouter } from "@openrouter/sdk";
-const openRouterUrl = "https://openrouter.ai/api/v1/chat/completions";
-const openRouterApiKey = process.env.OPENROUTER_API_KEY;
+const openRouterUrl = 'https://openrouter.ai/api/v1/chat/completions';
 
-
-const model = "deepseek/deepseek-chat-v3-0324";
+const model = 'deepseek/deepseek-chat-v3-0324';
 export const generateResponse = async (prompt) => {
   const res = await fetch(openRouterUrl, {
-    method: "POST",
+    method: 'POST',
 
     headers: {
       Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
 
     body: JSON.stringify({
@@ -18,12 +15,12 @@ export const generateResponse = async (prompt) => {
 
       messages: [
         {
-          role: "system",
-          content: "You must return ONLY valid raw JSON.",
+          role: 'system',
+          content: 'You must return ONLY valid raw JSON.',
         },
 
         {
-          role: "user",
+          role: 'user',
           content: prompt,
         },
       ],

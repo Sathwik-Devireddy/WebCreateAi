@@ -1,7 +1,7 @@
-import { generateResponse } from "../config/openRouter.js";
-import extractJson from "../utils/extractJson.js";
-import Website from "../models/wesite.model.js";
-import User from "../models/user.model.js";
+import { generateResponse } from '../config/openRouter.js';
+import extractJson from '../utils/extractJson.js';
+import Website from '../models/wesite.model.js';
+import User from '../models/user.model.js';
 const masterPrompt = `YOU ARE A PRINCIPAL FRONTEND DEVELOPER. YOU ARE AN EXPERT IN HTML, CSS, JAVASCRIPT AND REACT. YOU HAVE BEEN WORKING AS A FRONTEND DEVELOPER FOR 10 YEARS. YOU HAVE WORKED ON MANY PROJECTS AND HAVE A LOT OF EXPERIENCE IN THE FIELD. YOU ARE VERY GOOD AT UNDERSTANDING REQUIREMENTS AND DELIVERING HIGH QUALITY CODE. YOU ARE VERY GOOD AT WRITING CLEAN AND MAINTAINABLE CODE. YOU ARE VERY GOOD AT OPTIMIZING CODE FOR PERFORMANCE AND SEO. YOU ARE VERY GOOD AT WRITING TESTS FOR YOUR CODE.
   TASK IS TO GENERATE A FULLY FUNCTIONAL WEBSITE BASED ON THE USER'S PROMPT. THE USER WILL 
   PROVIDE A PROMPT DESCRIBING THE WEBSITE THEY WANT TO CREATE, AND YOU WILL GENERATE THE 
@@ -145,35 +145,35 @@ export const generateWebsite = async (req, res) => {
 
     if (!prompt) {
       return res.status(400).json({
-        message: "Prompt is required",
+        message: 'Prompt is required',
       });
     }
     const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(401).json({
-        message: "Unauthorized",
+        message: 'Unauthorized',
       });
     }
     if (user.credits < 50) {
       return res.status(403).json({
-        message: "Not enough credits",
+        message: 'Not enough credits',
       });
     }
 
-    const finalPrompt = masterPrompt.replace("USER_PROMPT", prompt);
-    let raw = "";
+    const finalPrompt = masterPrompt.replace('USER_PROMPT', prompt);
+    let raw = '';
     let parsed = null;
     for (let i = 0; i < 2 && !parsed; i++) {
       raw = await generateResponse(finalPrompt); // Generate the response using the final prompt
       parsed = await extractJson(raw);
       if (!parsed) {
-        raw = await generateResponse(finalPrompt + "\n\nRETURN ONLY RAW JSON.");
+        raw = await generateResponse(finalPrompt + '\n\nRETURN ONLY RAW JSON.');
         parsed = await extractJson(raw);
       }
     }
     if (!parsed.code) {
       return res.status(500).json({
-        message: "Failed to generate a valid response after multiple attempts",
+        message: 'Failed to generate a valid response after multiple attempts',
       });
     }
     const website = await Website.create({
@@ -184,20 +184,20 @@ export const generateWebsite = async (req, res) => {
       slug:
         prompt
           .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/[^a-z0-9]+/g, '-')
           .slice(0, 50) +
-        "-" +
+        '-' +
         Date.now(),
 
       latestCode: parsed.code,
 
       conversation: [
         {
-          role: "user",
+          role: 'user',
           content: prompt,
         },
         {
-          role: "ai",
+          role: 'ai',
           content: parsed.message,
         },
       ],
@@ -205,14 +205,14 @@ export const generateWebsite = async (req, res) => {
     user.credits -= 50;
     await user.save();
     return res.status(200).json({
-      message: "Website generated successfully",
+      message: 'Website generated successfully',
       websiteId: website._id,
       remainingCredites: user.credits,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
@@ -224,14 +224,14 @@ export const getWebsiteById = async (req, res) => {
     });
     if (!website) {
       return res.status(404).json({
-        message: "Website not found",
+        message: 'Website not found',
       });
     }
     return res.status(200).json(website);
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "Get Website By Id Error",
+      message: 'Get Website By Id Error',
     });
   }
 };
@@ -241,7 +241,7 @@ export const changes = async (req, res) => {
 
     if (!prompt) {
       return res.status(400).json({
-        message: "Prompt is required",
+        message: 'Prompt is required',
       });
     }
     const website = await Website.findOne({
@@ -250,18 +250,18 @@ export const changes = async (req, res) => {
     });
     if (!website) {
       return res.status(404).json({
-        message: "Website not found",
+        message: 'Website not found',
       });
     }
     const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(401).json({
-        message: "Unauthorized",
+        message: 'Unauthorized',
       });
     }
     if (user.credits < 15) {
       return res.status(403).json({
-        message: "Not enough credits",
+        message: 'Not enough credits',
       });
     }
 
@@ -273,32 +273,32 @@ export const changes = async (req, res) => {
     "message":"short confirmation message",
     "code":"the full updated code of the website after making the changes requested by the user. Make sure the code is complete and can be used as is to update the website."
     }`;
-    let raw = "";
+    let raw = '';
     let parsed = null;
     for (let i = 0; i < 2 && !parsed; i++) {
       raw = await generateResponse(updatePrompt); // Generate the response using the final prompt
       parsed = await extractJson(raw);
       if (!parsed) {
         raw = await generateResponse(
-          updatePrompt + "\n\nRETURN ONLY RAW JSON.",
+          updatePrompt + '\n\nRETURN ONLY RAW JSON.'
         );
         parsed = await extractJson(raw);
       }
     }
     if (!parsed.code) {
       return res.status(500).json({
-        message: "Failed to generate a valid response after multiple attempts",
+        message: 'Failed to generate a valid response after multiple attempts',
       });
     }
     website.conversation.push(
       {
-        role: "ai",
+        role: 'ai',
         content: parsed.message,
       },
       {
-        role: "user",
+        role: 'user',
         content: prompt,
-      },
+      }
     );
     website.latestCode = parsed.code;
     await website.save();
@@ -312,7 +312,7 @@ export const changes = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      message: "Update Website Error",
+      message: 'Update Website Error',
     });
   }
 };
@@ -323,7 +323,7 @@ export const getAllWebsites = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      message: "Get All Websites Error",
+      message: 'Get All Websites Error',
     });
   }
 };
@@ -335,14 +335,14 @@ export const deploy = async (req, res) => {
     });
     if (!website) {
       return res.status(404).json({
-        message: "Website not found",
+        message: 'Website not found',
       });
     }
     if (!website.slug) {
       website.slug =
         website.title
           .toLowerCase()
-          .replace(/[^a-zA-Z0-9]/g, "")
+          .replace(/[^a-zA-Z0-9]/g, '')
           .slice(0, 60) + website._id.toString().slice(-5);
     }
     website.deployed = true;
@@ -354,7 +354,7 @@ export const deploy = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      message: "Deploy Error",
+      message: 'Deploy Error',
     });
   }
 };
@@ -366,13 +366,13 @@ export const getBySlug = async (req, res) => {
     });
     if (!website) {
       return res.status(404).json({
-        message: "Website not found",
+        message: 'Website not found',
       });
     }
     return res.status(200).json(website);
   } catch (error) {
     return res.status(500).json({
-      message: "Get By Slug Error",
+      message: `Get By Slug Error,${error}`,
     });
   }
 };

@@ -1,10 +1,8 @@
 import { ArrowLeftCircleIcon, Coins } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import serverUrl from "../src/config/config.js";
-import { useState } from "react";
 import axios from "axios";
 
 const plans = [
@@ -77,7 +75,7 @@ const Pricing = () => {
         { planType: planKey },
         { withCredentials: true },
       );
-      window.location.href = result.data.sessionUrl;
+      window.location.assign(result.data.sessionUrl);
     } catch (error) {
       console.log(error);
       setloading("");

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
@@ -31,7 +30,8 @@ const Generate = () => {
         },
       );
       console.log(result.data);
-      setProgress(100);
+      setPhaseIndex(0);
+      setProgress(0);
       setLoading(false);
       navigate(`/editor/${result.data.websiteId}`);
     } catch (error) {
@@ -43,8 +43,6 @@ const Generate = () => {
   useEffect(() => {
     // Function to update the progress and phase
     if (!loading) {
-      setPhaseIndex(0);
-      setProgress(0);
       return;
     }
     let value = 0;

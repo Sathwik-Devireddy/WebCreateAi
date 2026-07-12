@@ -1,5 +1,5 @@
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import google_icon from "../src/assets/google_icon.png";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";

@@ -12,10 +12,9 @@ import {
   Rocket,
   X,
 } from "lucide-react";
-import { useRef } from "react";
 import Loader from "../components/Loader.jsx";
 import Button from "../components/Button.jsx";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import Editor from "@monaco-editor/react";
 const WebsiteEditor = () => {
   const { id } = useParams();
@@ -74,6 +73,7 @@ const WebsiteEditor = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     if (!updateLoading) return;
     const i = setInterval(() => {
@@ -82,7 +82,7 @@ const WebsiteEditor = () => {
     return () => {
       clearInterval(i);
     };
-  }, [updateLoading]);
+  }, [updateLoading, thinkingSteps.length]);
   useEffect(() => {
     const handleGetWebsite = async () => {
       // this function is responsible for fetching the website data from the server using the provided ID. It makes an API call to the server to retrieve the website details, including the latest code and conversation history. If the request is successful, it updates the website state with the retrieved data. If there is an error during the fetch operation, it sets an error message in the state to be displayed to the user.

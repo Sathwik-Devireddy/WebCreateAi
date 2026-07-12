@@ -1,12 +1,12 @@
-import jwt from "jsonwebtoken";
-import User from "../models/user.model.js";
+import jwt from 'jsonwebtoken';
+import User from '../models/user.model.js';
 const isAuth = async (req, res, next) => {
   try {
     const token = req.cookies.token;
 
     if (!token) {
       return res.status(401).json({
-        message: "Unauthorized",
+        message: 'Unauthorized',
       });
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -14,7 +14,7 @@ const isAuth = async (req, res, next) => {
     next(); //this line allows the request to proceed to the next middleware or route handler if the user is authenticated successfully.
   } catch (error) {
     return res.status(401).json({
-      message: "Unauthorized",
+      message: `Unauthorized ${error}`,
     });
   }
 };
