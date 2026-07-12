@@ -31,4 +31,8 @@ export const stripeWebhook = async (req, res) => {
     user.plan = plan;
     await user.save();
   }
+  console.log("Webhook hit");
+  console.log(session.metadata);
+  console.log("Credits before:", user.credits);
+  console.log("Credits after:", user.credits);
 };
