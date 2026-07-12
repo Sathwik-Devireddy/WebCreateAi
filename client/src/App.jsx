@@ -8,7 +8,7 @@ import Generate from "../pages/Generate";
 import WebsiteEditor from "../pages/Editor";
 import LiveSite from "../pages/LiveSite";
 import Pricing from "../pages/Pricing";
-export const serverUrl = "http://localhost:8000"; // this variable holds the base URL of the server, which is used for making API requests from the client application. It allows the client to communicate with the server for authentication and user-related operations.
+export const serverUrl = "https://webcreateai.onrender.com"; // this variable holds the base URL of the server, which is used for making API requests from the client application. It allows the client to communicate with the server for authentication and user-related operations.
 const App = () => {
   useGetCurrentUser();
   const { userData } = useSelector((state) => state.user);
