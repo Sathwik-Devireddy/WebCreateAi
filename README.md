@@ -2,7 +2,7 @@
 
 > **Intelligent Web Creation Platform Powered by AI**
 
-A full-stack web application that leverages artificial intelligence to streamline and enhance the web development process. WebCreateAi combines modern web technologies with AI capabilities to provide developers with a powerful toolkit for rapid web application creation, code generation, and intelligent development assistance.
+A full-stack web application that leverages artificial intelligence to streamline and enhance the web development process. WebCreateAi combines modern web technologies with AI capabilities to provide an intelligent platform for creating web applications.
 
 ---
 
@@ -20,16 +20,15 @@ A full-stack web application that leverages artificial intelligence to streamlin
 - [Development](#development)
 - [Build & Deployment](#build--deployment)
 - [API Integration](#api-integration)
-- [API Endpoints](#api-endpoints)
+- [API Routes](#api-routes)
 - [Contributing](#contributing)
-- [License](#license)
 - [Author](#author)
 
 ---
 
 ## 🎯 Overview
 
-WebCreateAi is an innovative platform designed to assist developers in creating web applications with AI-powered features. The application features a sophisticated frontend built with React and Vite, paired with a robust Express.js backend and MongoDB database integration. Users can leverage AI models to generate code, create UI components, and receive intelligent development suggestions in real-time.
+WebCreateAi is an innovative platform designed to assist developers in creating web applications with AI-powered features. The application features a sophisticated frontend built with React and Vite, with a robust backend powered by Express.js and MongoDB.
 
 ### Use Cases
 
@@ -203,20 +202,19 @@ WebCreateAi/
 │   │   ├── APIKey.js               # API key schema
 │   │   └── Payment.js              # Payment schema
 │   ├── routes/                     # API route handlers
-│   │   ├── auth.js                 # Authentication routes
-│   │   ├── projects.js             # Project routes
-│   │   ├── ai.js                   # AI integration routes
-│   │   ├── payments.js             # Payment routes
-│   │   └── users.js                # User routes
+│   │   ├── auth.routes.js          # Authentication routes
+│   │   ├── user.routes.js          # User routes
+│   │   ├── website.routes.js       # Website/Project routes
+│   │   └── billing.routes.js       # Billing routes
 │   ├── middleware/                 # Custom middleware
-│   │   ├── auth.js                 # JWT verification
+│   │   ├── isAuth.js               # JWT verification
 │   │   ├── errorHandler.js         # Error handling
 │   │   └── validation.js           # Request validation
 │   ├── controllers/                # Business logic
-│   │   ├── authController.js       # Auth logic
-│   │   ├── projectController.js    # Project logic
-│   │   ├── aiController.js         # AI logic
-│   │   └── paymentController.js    # Payment logic
+│   │   ├── auth.controller.js      # Auth logic
+│   │   ├── user.controller.js      # User logic
+│   │   ├── website.controller.js   # Website logic
+│   │   └── billing.controller.js   # Billing logic
 │   ├── config/                     # Configuration files
 │   │   ├── database.js             # MongoDB connection
 │   │   ├── openrouter.js           # OpenRouter setup
@@ -228,8 +226,7 @@ WebCreateAi/
 │   └── .env.example                # Environment variables template
 │
 ├── .gitignore                      # Git ignore file
-├── README.md                       # Project documentation
-└── LICENSE                         # Project license
+└── README.md                       # Project documentation
 ```
 
 ---
@@ -603,40 +600,33 @@ POST /api/payments/webhook
 
 ---
 
-## 📡 API Endpoints
+## 📡 API Routes
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - User logout
-- `POST /api/auth/refresh-token` - Refresh JWT token
-- `POST /api/auth/reset-password` - Reset password
+### Authentication Routes
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/google` | Google authentication |
+| GET | `/api/auth/logout` | User logout |
 
-### Projects
-- `GET /api/projects` - Get all user projects
-- `POST /api/projects` - Create new project
-- `GET /api/projects/:id` - Get project details
-- `PUT /api/projects/:id` - Update project
-- `DELETE /api/projects/:id` - Delete project
-- `GET /api/projects/:id/export` - Export project code
+### User Routes
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/user/me` | Get current user details |
 
-### AI Features
-- `POST /api/ai/generate` - Generate code with AI
-- `POST /api/ai/models` - Get available models
-- `POST /api/ai/templates` - Get code templates
-- `GET /api/ai/usage` - Get usage statistics
+### Website/Project Routes
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/website/generate` | Generate new website |
+| POST | `/api/website/update/:id` | Update website changes |
+| GET | `/api/website/get-by-id/:id` | Get website by ID |
+| GET | `/api/website/get-all` | Get all user websites |
+| GET | `/api/website/deploy/:id` | Deploy website |
+| GET | `/api/website/get-by-slug/:slug` | Get website by slug |
 
-### User Management
-- `GET /api/users/profile` - Get user profile
-- `PUT /api/users/profile` - Update profile
-- `POST /api/users/api-keys` - Manage API keys
-- `GET /api/users/settings` - Get user settings
-
-### Payments
-- `POST /api/payments/create-intent` - Create payment intent
-- `GET /api/payments/history` - Get payment history
-- `POST /api/payments/subscribe` - Subscribe to plan
-- `POST /api/payments/webhook` - Stripe webhook
+### Billing Routes
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/billing` | Process billing request |
 
 ---
 
@@ -687,12 +677,6 @@ We welcome contributions! Please follow these steps:
 - [ ] Documentation updated
 - [ ] No breaking changes introduced
 - [ ] Commit messages are clear and descriptive
-
----
-
-## 📄 License
-
-This project is licensed under the ISC License - see the LICENSE file for details.
 
 ---
 
