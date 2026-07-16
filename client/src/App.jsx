@@ -1,14 +1,14 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Home from '../pages/Home';
-import useGetCurrentUser from '../hooks/useGetCurrentUser';
-import { useSelector } from 'react-redux';
-import Dashboard from '../pages/Dashboard';
-import Generate from '../pages/Generate';
-import WebsiteEditor from '../pages/Editor';
-import LiveSite from '../pages/LiveSite';
-import Pricing from '../pages/Pricing';
-export const serverUrl = 'https://webcreateai.onrender.com'; // this variable holds the base URL of the server, which is used for making API requests from the client application. It allows the client to communicate with the server for authentication and user-related operations.
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Home from "../pages/Home";
+import useGetCurrentUser from "../hooks/useGetCurrentUser";
+import { useSelector } from "react-redux";
+import Dashboard from "../pages/Dashboard";
+import Generate from "../pages/Generate";
+import WebsiteEditor from "../pages/Editor";
+import LiveSite from "../pages/LiveSite";
+import Pricing from "../pages/Pricing";
+export const serverUrl = "https://webcreateai.onrender.com"; // this variable holds the base URL of the server, which is used for making API requests from the client application. It allows the client to communicate with the server for authentication and user-related operations.
 const App = () => {
   useGetCurrentUser();
   const { userData } = useSelector((state) => state.user);

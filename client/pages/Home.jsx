@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
-import LoginModal from '../components/LoginModal';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useSelector, useDispatch } from 'react-redux';
-import { Coins } from 'lucide-react';
-import axios from 'axios';
-import { setUserData } from '../src/redux/userSlice';
-import { serverUrl } from '../src/App';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import React, { useState } from "react";
+import LoginModal from "../components/LoginModal";
+import { AnimatePresence } from "framer-motion";
+import { useSelector, useDispatch } from "react-redux";
+import { Coins } from "lucide-react";
+import axios from "axios";
+import { setUserData } from "../src/redux/userSlice";
+import { serverUrl } from "../src/App";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
 const Home = () => {
   const highlights = [
-    'AI-Powered Code Generation',
-    'Fully Responsive',
-    'Production Ready Output',
+    "AI-Powered Code Generation",
+    "Fully Responsive",
+    "Production Ready Output",
   ];
 
   const [openLogin, setOpenLogin] = useState(false);
@@ -37,8 +38,8 @@ const Home = () => {
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
 
-    if (query.get('payment') === 'success') {
-      window.history.replaceState({}, '', '/');
+    if (query.get("payment") === "success") {
+      window.history.replaceState({}, "", "/");
     }
   }, []);
   useEffect(() => {
@@ -73,7 +74,7 @@ const Home = () => {
           <div className="flex items-center gap-5">
             <div
               className="hidden md:inline text-sm text-zinc-400 hover:text-white cursor-pointer transition"
-              onClick={() => navigate('/pricing')}
+              onClick={() => navigate("/pricing")}
             >
               Pricing
             </div>
@@ -82,14 +83,14 @@ const Home = () => {
                 <Coins size={14} className="text-yellow-50" />
                 <span
                   className="text-zinc-300"
-                  onClick={() => navigate('/pricing')}
+                  onClick={() => navigate("/pricing")}
                 >
                   Credits
                 </span>
                 <span>{userData.credits}</span>
                 <span
                   className="font-semibold"
-                  onClick={() => navigate('/pricing')}
+                  onClick={() => navigate("/pricing")}
                 >
                   +
                 </span>
@@ -143,7 +144,7 @@ const Home = () => {
                         </button>
                         <button
                           className="w-full px-4 py-3 text-left text-sm hover:bg-white/5"
-                          onClick={() => navigate('/dashboard')}
+                          onClick={() => navigate("/dashboard")}
                         >
                           DashBoard
                         </button>
@@ -194,11 +195,11 @@ const Home = () => {
         >
           <button
             onClick={() =>
-              userData ? navigate('/dashboard') : setOpenLogin(true)
+              userData ? navigate("/dashboard") : setOpenLogin(true)
             }
             className="px-10 py-4 rounded-xl bg-white text-black font-semibold hover:scale-105 mt-12 transition duration-300"
           >
-            {userData ? 'Go to Dashboard' : 'Get Started'}
+            {userData ? "Go to Dashboard" : "Get Started"}
           </button>
         </motion.div>
       </section>
@@ -241,7 +242,7 @@ const Home = () => {
                 className="cursor-pointer rounded-2xl bg-white/5 border border-white/10 overflow-hidden"
               >
                 <div className="h-40 bg-black">
-                  {' '}
+                  {" "}
                   <iframe
                     srcDoc={w.latestCode}
                     className="w-[140%] h-[140%] scale-[0.72] origin-top-left pointer-events-none bg-white"
@@ -252,7 +253,7 @@ const Home = () => {
                     {w.title}
                   </h3>
                   <p className="text-xs text-zinc-400">
-                    Last Updated {''}
+                    Last Updated {""}
                     {new Date(w.updatedAt).toLocaleDateString()}
                   </p>
                 </div>

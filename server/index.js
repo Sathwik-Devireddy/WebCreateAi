@@ -1,24 +1,24 @@
-import express from 'express';
-import dotenv from 'dotenv';
+import express from "express";
+import dotenv from "dotenv";
 dotenv.config();
 
-import userRouter from './routes/user.routes.js';
-import connectDB from './config/db.js';
-import authRouter from './routes/auth.routes.js';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import websiteRouter from './routes/website.routes.js';
-import billingRouter from './routes/billing.routes.js';
-import { stripeWebhook } from './controllers/stripWebhook.controller.js';
+import userRouter from "./routes/user.routes.js";
+import connectDB from "./config/db.js";
+import authRouter from "./routes/auth.routes.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import websiteRouter from "./routes/website.routes.js";
+import billingRouter from "./routes/billing.routes.js";
+import { stripeWebhook } from "./controllers/stripWebhook.controller.js";
 
 const app = express();
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 const port = process.env.PORT || 6000;
 
 // Stripe webhook MUST come before express.json()
 app.post(
-  '/api/stripe-webhook',
-  express.raw({ type: 'application/json' }),
+  "/api/stripe-webhook",
+  express.raw({ type: "application/json" }),
   stripeWebhook
 );
 
@@ -29,17 +29,17 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: 'https://webcreateai-1.onrender.com',
+    origin: "https://webcreateai-1.onrender.com",
     credentials: true,
   })
 );
 
-app.use('/api/auth', authRouter);
-app.use('/api/user', userRouter);
-app.use('/api/website', websiteRouter);
-app.use('/api/billing', billingRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
+app.use("/api/website", websiteRouter);
+app.use("/api/billing", billingRouter);
 
 app.listen(port, () => {
-  console.log(`Server is on this  running on port  ${port}`);
+  console.log(`Server is running on port ${port}`);
   connectDB();
 });
