@@ -45,7 +45,6 @@ WebCreateAi is an innovative platform designed to assist developers in creating 
 - **Firebase Integration**: Real-time database and authentication support
 - **Multi-model AI Selection**: Switch between different AI models seamlessly
 - **Code Sharing**: Share generated code with custom URLs
-- **Dark Mode Support**: Theme switching for better UX
 - **Project History**: Keep track of all created projects and templates
 
 ### Backend Features
@@ -58,7 +57,6 @@ WebCreateAi is an innovative platform designed to assist developers in creating 
 - **Rate Limiting**: Prevent API abuse with request throttling
 - **Error Handling**: Comprehensive error handling and logging
 - **Caching Layer**: Optimize performance with strategic caching
-- **WebSocket Support**: Real-time updates and notifications
 
 ---
 
@@ -74,7 +72,6 @@ WebCreateAi is an innovative platform designed to assist developers in creating 
 - **Toast Notifications**: Real-time feedback for user actions
 
 #### 🤖 AI Capabilities
-- **Model Selection**: Switch between multiple AI models (GPT-4, Claude, Mistral, etc.)
 - **Custom Prompts**: Save and reuse custom AI prompts
 - **Code Templates**: Pre-built templates for common patterns
 - **Context Awareness**: Better understanding of code context for smarter suggestions
